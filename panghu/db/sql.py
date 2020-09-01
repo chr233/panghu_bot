@@ -3,8 +3,8 @@
 # @Author       : Chr_
 # @Date         : 2020-08-13 18:29:02
 # @LastEditors  : Chr_
-# @LastEditTime : 2020-09-01 18:22:55
-# @Description  : 数据库-基础模块
+# @LastEditTime : 2020-09-01 18:58:39
+# @Description  : 底层操作模块
 '''
 
 import nonebot
@@ -21,7 +21,7 @@ dbuser = config.DB_USER
 dbpass = config.DB_PASS
 dbname = config.DB_NAME
 
-# 字节转数字
+# 字节转数字, PS:只能转1位
 conversions[pymysql.FIELD_TYPE.BIT] = lambda x: ord(x)
 
 
