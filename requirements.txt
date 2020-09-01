@@ -1,0 +1,12 @@
+psutil
+httpx
+requests
+bs4
+lxml
+jieba
+pypinyin
+pydub
+aiomysql
+pillow
+rcnb
+distro
