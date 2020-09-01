@@ -3,17 +3,15 @@
 # @Author       : Chr_
 # @Date         : 2020-08-13 18:29:02
 # @LastEditors  : Chr_
-# @LastEditTime : 2020-09-01 18:58:39
+# @LastEditTime : 2020-09-01 20:21:26
 # @Description  : 底层操作模块
 '''
 
-import nonebot
-import aiomysql
-from aiomysql import Error, Connection
+from nonebot import get_bot
+from aiomysql import  Connection,connect
 from pymysql.converters import conversions
-import pymysql
 
-config = nonebot.get_bot().config
+config = get_bot().config
 
 dbhost = config.DB_HOST
 dbport = config.DB_PORT
@@ -22,7 +20,7 @@ dbpass = config.DB_PASS
 dbname = config.DB_NAME
 
 # 字节转数字, PS:只能转1位
-conversions[pymysql.FIELD_TYPE.BIT] = lambda x: ord(x)
+conversions[16] = lambda x: ord(x)
 
 
 async def connect_db() -> Connection:
@@ -30,7 +28,7 @@ async def connect_db() -> Connection:
     获取数据库连接
     '''
     try:
-        conn = await aiomysql.connect(
+        conn = await connect(
             host=dbhost,
             port=dbport,
             user=dbuser,
