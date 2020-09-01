@@ -32,6 +32,9 @@ async def exec_dql_mul(conn: Connection, sql: str, value: tuple = None) -> tuple
     '''
     查询_所有结果
     '''
+    if not conn:
+        print('数据库连接出错')
+        return(False)
     try:
         async with conn.cursor() as cur:
             await cur.execute(sql, value)
@@ -45,6 +48,9 @@ async def exec_dql(conn: Connection, sql: str, value: tuple = None) -> tuple:
     '''
     查询_单结果
     '''
+    if not conn:
+        print('数据库连接出错')
+        return(False)
     try:
         async with conn.cursor() as cur:
             await cur.execute(sql, value)
@@ -59,6 +65,9 @@ async def exec_dml(conn: Connection, sql: str, value: tuple = None) -> bool:
     '''
     写入
     '''
+    if not conn:
+        print('数据库连接出错')
+        return(False)
     try:
         async with conn.cursor() as cur:
             await cur.execute(sql, value)

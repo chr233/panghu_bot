@@ -3,7 +3,7 @@
 # @Author       : Chr_
 # @Date         : 2020-08-12 14:59:01
 # @LastEditors  : Chr_
-# @LastEditTime : 2020-08-29 16:13:37
+# @LastEditTime : 2020-09-01 16:06:35
 # @Description  : 用户插件-命令
 '''
 
@@ -24,7 +24,8 @@ async def register(session: CommandSession):
 
 @on_command('getuser', only_to_me=True)
 async def getuser(session: CommandSession):
-    uid = session.event.user_id
-
-    msg = await search_user(uid)
+    event = session.event
+    uid = event.user_id
+    name = event.sender.get('nickname', '')
+    msg = await search_user(uid,name)
     await session.send(msg)
