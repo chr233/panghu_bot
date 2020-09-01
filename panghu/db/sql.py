@@ -1,6 +1,17 @@
+
+'''
+# @Author       : Chr_
+# @Date         : 2020-08-13 18:29:02
+# @LastEditors  : Chr_
+# @LastEditTime : 2020-09-01 18:22:55
+# @Description  : 数据库-基础模块
+'''
+
 import nonebot
 import aiomysql
 from aiomysql import Error, Connection
+from pymysql.converters import conversions
+import pymysql
 
 config = nonebot.get_bot().config
 
@@ -9,6 +20,9 @@ dbport = config.DB_PORT
 dbuser = config.DB_USER
 dbpass = config.DB_PASS
 dbname = config.DB_NAME
+
+# 字节转数字
+conversions[pymysql.FIELD_TYPE.BIT] = lambda x: ord(x)
 
 
 async def connect_db() -> Connection:
@@ -21,7 +35,8 @@ async def connect_db() -> Connection:
             port=dbport,
             user=dbuser,
             password=dbpass,
-            db=dbname)
+            db=dbname,
+            conv=conversions)
         return(conn)
     except Exception as e:
         print(e)
@@ -43,6 +58,7 @@ async def exec_dql_mul(conn: Connection, sql: str, value: tuple = None) -> tuple
     except Exception as e:
         print(e)
         return(False)
+
 
 async def exec_dql(conn: Connection, sql: str, value: tuple = None) -> tuple:
     '''

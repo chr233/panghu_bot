@@ -3,8 +3,8 @@
 # @Author       : Chr_
 # @Date         : 2020-08-29 11:20:09
 # @LastEditors  : Chr_
-# @LastEditTime : 2020-09-01 17:11:06
-# @Description  : 用户操作
+# @LastEditTime : 2020-09-01 18:23:36
+# @Description  : 数据库-users表操作
 '''
 
 from re import escape
@@ -13,7 +13,7 @@ from .sql import Connection
 from .sql import exec_dml, exec_dql, exec_dql_mul, connect_db
 
 
-def check_flag(flag: bytes) -> (int, bool, bool):
+def check_flag(flag: int) -> (int, bool, bool):
     '''
     检查用户的flag
 
@@ -28,7 +28,7 @@ def check_flag(flag: bytes) -> (int, bool, bool):
     return((level, is_ban, is_disable))
 
 
-def unpack_flag(flag: bytes) -> (int, bool, bool):
+def unpack_flag(flag: int) -> (int, bool, bool):
     '''
     检查用户的flag
 
@@ -45,7 +45,7 @@ def unpack_flag(flag: bytes) -> (int, bool, bool):
     return((level, is_ban, is_disable))
 
 
-def flag_to_str(flag: bytes) -> str:
+def flag_to_str(flag: int) -> str:
     '''
     flag转字符串
 
@@ -54,9 +54,6 @@ def flag_to_str(flag: bytes) -> str:
     返回:
         str: 文本
     '''
-    print(type(flag))
-    print(flag)
-    return('test')
     level, is_ban, is_disable = unpack_flag(flag)
     result = f'等级:{level}'
     if is_ban:
