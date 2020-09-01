@@ -2,12 +2,11 @@
 # @Author       : Chr_
 # @Date         : 2020-08-12 14:02:34
 # @LastEditors  : Chr_
-# @LastEditTime : 2020-08-17 00:28:36
+# @LastEditTime : 2020-09-01 21:28:41
 # @Description  : 天气插件-数据源
 '''
 
 import json
-import httpx
 from bs4 import BeautifulSoup
 from panghu.utils.aionet import async_get
 
@@ -31,10 +30,10 @@ async def get_weather_report(city: str, days: int = 3) -> str:
             wstr = '\n'.join(weather)
             msg = f'{title}:\n{wstr}'
         else:
-            msg = f'未查到该城市天气'
+            msg = '未查到该城市天气'
             print(title)
     else:
-        msg = f'未查到该城市天气'
+        msg = '未查到该城市天气'
     return(msg)
 
 
@@ -66,7 +65,7 @@ async def get_city_weather(code: int) -> (str, list):
             w_days.append((day, weather, temp))
         result = (w_title, w_days)
     except Exception as e:
-        print(e.get_text())
+        print(e)
         result = (f'{e}', [])
     return(result)
 
@@ -90,5 +89,6 @@ async def get_city_code(city: str) -> int:
         jd = json.loads(txt[1:-1])
         code = jd[0]['ref'].split('~')[0]
     except Exception as e:
+        print(e)
         code = -1
     return(code)

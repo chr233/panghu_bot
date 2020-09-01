@@ -3,12 +3,12 @@
 # @Author       : Chr_
 # @Date         : 2020-08-29 11:20:09
 # @LastEditors  : Chr_
-# @LastEditTime : 2020-09-01 19:52:34
+# @LastEditTime : 2020-09-01 20:58:57
 # @Description  : users表操作
 '''
 
 from re import escape
-from .sql import exec_dml, exec_dql, exec_dql_mul, connect_db, Connection
+from .sql import exec_dml, exec_dql, exec_dql_mul, get_conn, close_conn, Connection
 
 
 def check_flag(flag: int) -> (int, bool, bool):
@@ -53,15 +53,15 @@ def flag_to_str(flag: int) -> str:
         str: 文本
     '''
     level, is_ban, is_disable = unpack_flag(flag)
-    result = f'等级:{level}'
+    result = f'用户等级: {level}'
     if is_ban:
-        result += '[封禁]'
+        result += ' [封禁]'
     if is_disable:
-        result += '[禁用]'
+        result += ' [禁用]'
     return(result)
 
 
-async def __add_user(conn: Connection, qqid: int, name: str) -> bool:
+async def add_user(conn: Connection, qqid: int, name: str) -> bool:
     '''
     创建用户, 需要传入conn对象
 
@@ -79,24 +79,7 @@ async def __add_user(conn: Connection, qqid: int, name: str) -> bool:
     return(result)
 
 
-async def add_user(qqid: int, name: str) -> bool:
-    '''
-    创建用户
-
-    参数:
-        qqid: QQ号
-        name: 昵称
-    返回:
-        bool: 操作是否成功
-    '''
-    conn = await connect_db()
-    result = await __add_user(conn, qqid, name)
-    if conn:
-        conn.close()
-    return result
-
-
-async def __get_user(conn: Connection, qqid: int) -> (int, int, str, int):
+async def get_user(conn: Connection, qqid: int) -> (int, int, str, int):
     '''
     获取用户信息, 需要传入conn对象
 
@@ -114,41 +97,41 @@ async def __get_user(conn: Connection, qqid: int) -> (int, int, str, int):
     return(result)
 
 
-async def get_user(qqid: int, name: str = '', auto_add: bool = False) -> (int, int, str, int):
-    '''
-    获取用户信息
+# async def get_user(qqid: int, name: str = '', auto_add: bool = False) -> (int, int, str, int):
+#     '''
+#     获取用户信息
 
-    参数:
-        qqid: QQ号
-        [name]: 昵称
-        [auto_add]: 用户不存在是否自动添加
-    返回:
-        int: uid
-        int: QQ号
-        str: 昵称
-        int: flag
-    '''
-    conn = await connect_db()
-    resp = await __get_user(conn, qqid)
-    if resp:  # 找到用户
-        uid, qqid, name, flag = resp
-        result = (uid, qqid, name, flag)
-    elif auto_add:  # 自动添加用户
-        await __add_user(conn, qqid, name)
-        resp = await __get_user(conn, qqid)
-        if resp:
-            uid, qqid, name, flag = resp
-            result = (uid, qqid, name, flag)
-        else:
-            result = False
-    else:
-        result = False
-    if conn:
-        conn.close()
-    return(result)
+#     参数:
+#         qqid: QQ号
+#         [name]: 昵称
+#         [auto_add]: 用户不存在是否自动添加
+#     返回:
+#         int: uid
+#         int: QQ号
+#         str: 昵称
+#         int: flag
+#     '''
+#     conn = await connect_db()
+#     resp = await __get_user(conn, qqid)
+#     if resp:  # 找到用户
+#         uid, qqid, name, flag = resp
+#         result = (uid, qqid, name, flag)
+#     elif auto_add:  # 自动添加用户
+#         await __add_user(conn, qqid, name)
+#         resp = await __get_user(conn, qqid)
+#         if resp:
+#             uid, qqid, name, flag = resp
+#             result = (uid, qqid, name, flag)
+#         else:
+#             result = False
+#     else:
+#         result = False
+#     if conn:
+#         conn.close()
+#     return(result)
 
 
-async def __get_user_mul(conn: Connection, qqid: int = 0, name: str = None) -> tuple:
+async def get_user_mul(conn: Connection, qqid: int = 0, name: str = None) -> tuple:
     '''
     获取用户信息, 批量, 需要传入conn对象
 
@@ -163,23 +146,7 @@ async def __get_user_mul(conn: Connection, qqid: int = 0, name: str = None) -> t
     return(result)
 
 
-async def get_user_mul(qqid: int = 0, name: str = None) -> tuple:
-    '''
-    获取用户信息, 批量
-
-    参数:
-        [qqid]: QQ号
-        [name]: 昵称
-    返回
-    '''
-    conn = await connect_db()
-    resps = await __get_user_mul(conn, qqid, name)
-    if conn:
-        conn.close()
-    return(resps)
-
-
-async def __modify_user(conn: Connection, uid: int, qqid: int, name: str, flag: int) -> bool:
+async def modify_user(conn: Connection, uid: int, qqid: int, name: str, flag: int) -> bool:
     '''
     修改用户信息, 需要传入conn对象
 
@@ -194,23 +161,4 @@ async def __modify_user(conn: Connection, uid: int, qqid: int, name: str, flag: 
     '''
     sql = "UPDATE `panghu`.`users` SET `qqid`=%s,`name`=%s,`flag`=%s WHERE `uid`=%s"
     result = await exec_dml(conn, sql,  (qqid, name, flag, uid))
-    return(result)
-
-
-async def modify_user(uid: int, qqid: int, name: str, flag: int) -> bool:
-    '''
-    修改用户信息
-
-    参数:
-        uid: uid
-        qqid: QQ号
-        name: 昵称
-        flag: flag
-    返回:
-        bool: 操作是否成功
-    '''
-    conn = await connect_db()
-    result = await __modify_user(conn, uid, qqid, name, flag)
-    if conn:
-        conn.close()
     return(result)

@@ -3,7 +3,7 @@
 # @Author       : Chr_
 # @Date         : 2020-08-13 18:29:02
 # @LastEditors  : Chr_
-# @LastEditTime : 2020-09-01 20:21:26
+# @LastEditTime : 2020-09-01 20:44:13
 # @Description  : 底层操作模块
 '''
 
@@ -23,7 +23,7 @@ dbname = config.DB_NAME
 conversions[16] = lambda x: ord(x)
 
 
-async def connect_db() -> Connection:
+async def get_conn() -> Connection:
     '''
     获取数据库连接
     '''
@@ -40,6 +40,13 @@ async def connect_db() -> Connection:
         print(e)
         return(False)
 
+
+def close_conn(conn:Connection):
+    '''
+    销毁连接
+    '''
+    if conn:
+        conn.close()
 
 async def exec_dql_mul(conn: Connection, sql: str, value: tuple = None) -> tuple:
     '''

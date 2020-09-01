@@ -2,7 +2,7 @@
 # @Author       : Chr_
 # @Date         : 2020-08-12 14:02:34
 # @LastEditors  : Chr_
-# @LastEditTime : 2020-09-01 18:52:43
+# @LastEditTime : 2020-09-01 21:16:01
 # @Description  : 用户插件-核心
 '''
 
@@ -12,24 +12,55 @@ from bs4 import BeautifulSoup
 from panghu.db import users
 
 
-async def add_user(qqid: int, name: str) -> str:
+async def add_new_user(qqid: int, name: str) -> str:
     '''
-    1
+    添加新用户
+
+    参数:
+        qqid: QQ号
+        name: 昵称
+    返回:
+        str: 消息
     '''
+    conn = await users.get_conn()
+    result = await users.add_user(conn, qqid, name)
+    msg = '操作成功' if result else '操作失败'
+    users.close_conn(conn)
+    return(msg)
 
-    r = await users.add_user(qqid, name)
-    print(r)
-    return(str(r))
 
-
-async def search_user(qqid: int, name: str) -> tuple:
+async def get_user_info(qqid: int, name: str) -> tuple:
     '''
     获取用户信息
     '''
-    resp = await users.get_user(qqid, name, True)
-    if resp:
-        uid, _, _, flag = resp
-        print(f'{qqid} {users.flag_to_str(flag)}')
-        await users.modify_user(uid, qqid, name, flag)
+    conn = await users.get_conn()
+    resp = await users.get_user(conn, qqid, True)
+    if resp:  # 找到用户
+        uid, qqid, name, flag = resp
+    else:  # 新增用户
+        await users.add_user(conn, qqid, name)
+        resp = await users.get_user(conn, qqid)
+        if resp:
+            uid, qqid, name, flag = resp
+        else:
+            return('数据库连接可能出错')
+    msg = users.flag_to_str(flag)
+    users.close_conn(conn)
+    return(msg)
 
-    return(str(resp))
+
+async def get_user_info_mul(qqid: int, name: str) -> tuple:
+    '''
+    获取用户信息, 批量
+    '''
+    conn = await users.get_conn()
+    resps = await users.get_user_mul(conn, qqid, True)
+    print(resps)
+    try:
+        msg = [users.flag_to_str(x[3]) for x in resps]
+        msg='\n'.join(msg)
+    except Exception as e:
+        print(e)
+        msg='数据库'
+    users.close_conn(conn)
+    return('\n'.join(msg))
