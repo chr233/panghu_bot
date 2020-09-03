@@ -66,7 +66,7 @@ def flag_to_str(flag: int) -> str:
 
 async def add_user(conn: Connection, qqid: int, name: str) -> bool:
     '''
-    创建用户, 需要传入conn对象
+    创建用户
 
     参数:
         conn: 数据库连接对象
@@ -84,7 +84,7 @@ async def add_user(conn: Connection, qqid: int, name: str) -> bool:
 
 async def get_user(conn: Connection, qqid: int) -> (int, int, str, int):
     '''
-    获取用户信息, 需要传入conn对象
+    获取用户信息
 
     参数:
         conn: 数据库连接对象
@@ -102,7 +102,7 @@ async def get_user(conn: Connection, qqid: int) -> (int, int, str, int):
 
 async def get_user_mul(conn: Connection, qqid: int = 0, name: str = None) -> tuple:
     '''
-    获取用户信息, 批量, 需要传入conn对象
+    获取用户信息, 批量
 
     参数:
         [qqid]: QQ号
@@ -117,7 +117,7 @@ async def get_user_mul(conn: Connection, qqid: int = 0, name: str = None) -> tup
 
 async def modify_user(conn: Connection, uid: int, qqid: int, name: str, flag: int) -> bool:
     '''
-    修改用户信息, 需要传入conn对象
+    修改用户信息
 
     参数:
         conn: 数据库连接对象

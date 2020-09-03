@@ -2,12 +2,13 @@
 # @Author       : Chr_
 # @Date         : 2020-08-12 14:02:34
 # @LastEditors  : Chr_
-# @LastEditTime : 2020-09-01 12:25:14
+# @LastEditTime : 2020-09-03 21:38:06
 # @Description  : Steam插件-数据源
 '''
 
 import json
 import httpx
+from PIL import Image, ImageDraw, ImageFont
 from bs4 import BeautifulSoup
 # from panghu.db import connect_db, exec_dml, exec_dql
 
@@ -50,23 +51,43 @@ def _get_user_profile(u64: str) -> tuple:
     url = f'https://steamcommunity.com/profiles/{u64}'
     c = {'Steam_Language': 'schinese'}
     try:
-        resp = requests.get(url=url, cookies=c)
-        resp.encoding = 'utf-8'
-        html = resp.text
+        # resp = requests.get(url=url, cookies=c)
+        # resp.encoding = 'utf-8'
+        # html = resp.text
 
         # f = open('1.html', 'wb+')
         # f.write(html.encode('utf-8'))
 
-        # f = open('notset.html', 'rb')
-        # html = f.read()
-        
+        f = open('full.html', 'rb')
+        html = f.read()
+
         soup = BeautifulSoup(html, 'lxml')
         header = soup.select_one('div.profile_header_content')
         private_tag = header.select_one('div.profile_private_info')
 
+        avatar_pic = header.select_one(
+            'div.playerAvatarAutoSizeInner>img'
+        )['src']
+
+        avatar_frame = header.select_one(
+            'div.playerAvatarAutoSizeInner>div.profile_avatar_frame')
+        if avatar_frame:
+            avatar_frame_pic = avatar_frame.select_one(
+                'img'
+            )['src']
+        else:
+            avatar_frame_pic = ''
+
         if not private_tag:
             # 资料公开
             # 名称 & 等级信息
+            background = soup.select_one((
+                'body>div.responsive_page_frame.with_header>div.responsive_page_content>'
+                'div.responsive_page_template_content>div.no_header.profile_page.has_profile_background')
+            )
+
+            bg_img = background['style'][24:-4] if background else ''
+
             nick_name = header.select_one(
                 'div.profile_header_centered_persona>div:nth-child(1)>span:nth-child(1)'
             ).get_text()
@@ -147,6 +168,19 @@ def _get_user_profile(u64: str) -> tuple:
     except IOError as e:
         print(e)
         return(False)
+
+
+def graph_user_profile(data: dict):
+    '''
+    绘制steam信息
+    '''
+    HEIGHT=300
+    WIDTH=600
+    font=1
+    font = ImageFont.truetype(font=FONT_PATH, size=FONR_SIZE)
+    width = WIDTH + 2*BOARD
+    height = (len(sysdata)+len(usage)*2) * ITEM_HEIGHT + 2*BOARD
+    img = Image.new('RGB', (width, height), color=BG_COLOR)
 
 
 a = (_get_user_profile('1'))

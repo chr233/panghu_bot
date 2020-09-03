@@ -3,7 +3,7 @@
 # @Author       : Chr_
 # @Date         : 2020-08-23 13:53:59
 # @LastEditors  : Chr_
-# @LastEditTime : 2020-09-01 20:28:57
+# @LastEditTime : 2020-09-03 21:37:58
 # @Description  : 服务器监控-核心
 '''
 
@@ -153,7 +153,7 @@ def draw_usage_data(sysdata: list, usage: list) -> str:
     BOARD = 5                    # 图片边框
     WIDTH = 280                  # 条目宽度
     ITEM_HEIGHT = 20             # 条目高度
-    FONR_SIZE = 12               # 字体大小
+    FONT_SIZE = 12               # 字体大小
     BG_COLOR = '#FFFFFF'         # 背景颜色
     BD_COLOR = '#EEEEEE'         # 边框颜色
     FT_COLOR = '#333333'         # 字体颜色
@@ -162,7 +162,7 @@ def draw_usage_data(sysdata: list, usage: list) -> str:
     BAR_HIGH_COLOR = '#ffbe00'   # 进度条颜色[76~90%]
     BAR_FULL_COLOR = '#f41b35'   # 进度条颜色[91~100%]
     # ===============================
-    font = ImageFont.truetype(font=FONT_PATH, size=FONR_SIZE)
+    font = ImageFont.truetype(font=FONT_PATH, size=FONT_SIZE)
     width = WIDTH + 2*BOARD
     height = (len(sysdata)+len(usage)*2) * ITEM_HEIGHT + 2*BOARD
     img = Image.new('RGB', (width, height), color=BG_COLOR)
