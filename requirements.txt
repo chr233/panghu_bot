@@ -10,3 +10,4 @@ aiomysql
 pillow
 rcnb
 distro
+ujson
